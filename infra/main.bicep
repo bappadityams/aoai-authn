@@ -143,10 +143,7 @@ module apim './modules/apim/apim.bicep' = {
     location: location
     tags: tags
     applicationInsightsName: monitoring.outputs.applicationInsightsName
-    openaiKeyVaultSecretName: openaiKeyVaultSecret.outputs.keyVaultSecretName
-    keyVaultEndpoint: keyVault.outputs.keyVaultEndpoint
     openAiUri: openAi.outputs.openAiEndpointUri
-    managedIdentityName: managedIdentity.outputs.managedIdentityName
     apimSubnetId: vnet.outputs.apimSubnetId
   }
 }

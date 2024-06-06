@@ -13,6 +13,7 @@ param openAiPrivateEndpointName string
 param vNetName string
 param privateEndpointSubnetName string
 param openAiDnsZoneName string
+param cognitiveServicesUserRoleId string = 'a97b65f3-24c7-4388-baec-2e87135dc908' // Cognitive Services User role ID
 
 resource account 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: name
@@ -57,6 +58,8 @@ module privateEndpoint '../networking/private-endpoint.bicep' = {
     location: location
   }
 }
+
+
 
 output openAiName string = account.name
 output openAiEndpointUri string = '${account.properties.endpoint}openai/'

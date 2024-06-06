@@ -11,21 +11,17 @@ param sku string = 'Developer'
 param skuCount int = 1
 param applicationInsightsName string
 param openAiUri string
-param openaiKeyVaultSecretName string
-param keyVaultEndpoint string
-param managedIdentityName string
+
 param apimSubnetId string
 
-var openAiApiKeyNamedValue = 'openai-apikey'
+
 var openAiApiBackendId = 'openai-backend'
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: applicationInsightsName
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
-  name: managedIdentityName
-}
+
 
 resource apimService 'Microsoft.ApiManagement/service@2021-08-01' = {
   name: name
@@ -36,10 +32,7 @@ resource apimService 'Microsoft.ApiManagement/service@2021-08-01' = {
     capacity: (sku == 'Consumption') ? 0 : ((sku == 'Developer') ? 1 : skuCount)
   }
   identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.id}': {}
-    }
+    type: 'SystemAssigned'
   }
   properties: {
     publisherEmail: publisherEmail
@@ -98,18 +91,7 @@ resource openAiBackend 'Microsoft.ApiManagement/service/backends@2021-08-01' = {
   }
 }
 
-resource apimOpenaiApiKeyNamedValue 'Microsoft.ApiManagement/service/namedValues@2022-08-01' = {
-  name: openAiApiKeyNamedValue
-  parent: apimService
-  properties: {
-    displayName: openAiApiKeyNamedValue
-    secret: true
-    keyVault:{
-      secretIdentifier: '${keyVaultEndpoint}secrets/${openaiKeyVaultSecretName}'
-      identityClientId: apimService.identity.userAssignedIdentities[managedIdentity.id].clientId
-    }
-  }
-}
+
 
 resource openaiApiPolicy 'Microsoft.ApiManagement/service/apis/policies@2022-08-01' = {
   name: 'policy'
@@ -120,7 +102,7 @@ resource openaiApiPolicy 'Microsoft.ApiManagement/service/apis/policies@2022-08-
   }
   dependsOn: [
     openAiBackend
-    apimOpenaiApiKeyNamedValue
+    
   ]
 }
 
