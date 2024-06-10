@@ -136,3 +136,4 @@ resource apimLogger 'Microsoft.ApiManagement/service/loggers@2021-12-01-preview'
 
 output apimName string = apimService.name
 output apimOpenaiApiPath string = apimOpenaiApi.properties.path
+output apimPrincipalId string = apimService.identity.principalId

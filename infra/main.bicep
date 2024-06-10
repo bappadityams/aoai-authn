@@ -24,6 +24,7 @@ param apimSubnetName string = ''
 param apimNsgName string = ''
 param privateEndpointSubnetName string = ''
 param privateEndpointNsgName string = ''
+param cognitiveServicesUserRoleId string = 'a97b65f3-24c7-4388-baec-2e87135dc908' // Cognitive Services User role ID
 
 //Determine the version of the chat model to deploy
 param arrayVersion0301Locations array = [
@@ -175,6 +176,15 @@ module openAi 'modules/ai/cognitiveservices.bicep' = {
         }
       }
     ]
+  }
+}
+
+
+resource apimRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(apim.name, cognitiveServicesUserRoleId)
+  properties: {
+    principalId: apim.outputs.apimPrincipalId
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', cognitiveServicesUserRoleId)
   }
 }
 
