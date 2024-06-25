@@ -30,3 +30,9 @@ metadata:
 #     project: ./src/react-app
 #     host: appservice
 #     dist: build
+hooks:
+  preprovision:
+    shell: pwsh
+    run: ./scripts/auth_init.ps1
+    continueOnError: false
+    interactive: false
